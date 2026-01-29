@@ -1017,3 +1017,12 @@ body::after {
   color: #ff5e61; /* Rozja�niony akcent na hover */
   text-shadow: 0 0 12px var(--accent-glow);
 }
+
+/* Vintage Scissors Icon Fix */
+.vintage-scissors {
+  width: 36px;
+  height: 36px;
+  color: var(--text-main);
+  opacity: 0.8;
+  /* No rotation */
+}
