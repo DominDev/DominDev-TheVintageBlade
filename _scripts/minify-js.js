@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * JavaScript Minification Script
- * Uses Terser for production-ready minification
+ * JavaScript Auto-Minifier
+ * Automatically finds and minifies all .js files in src/js
  *
  * Features:
+ * - Recursive auto-discovery
  * - Source Maps support
- * - Auto-directory creation
+ * - Smart Save (only writes on change)
  * - Watch mode
  */
 
@@ -17,16 +18,10 @@ const path = require('path');
 // Configuration
 // ============================================ 
 
-const FILES_TO_MINIFY = [
-  { input: 'src/js/main.js', output: 'src/js/main.min.js' },
-  { input: 'src/js/config.js', output: 'src/js/config.min.js' },
-  { input: 'src/js/privacy-content.js', output: 'src/js/privacy-content.min.js' }
-];
-
-const ROOT_DIR = path.join(__dirname, '..');
+const SRC_DIR = path.join(__dirname, '../src/js');
 const WATCH_MODE = process.argv.includes('--watch');
 
-const BASE_TERSER_OPTIONS = {
+const TERSER_OPTIONS = {
   compress: {
     drop_console: false,
     drop_debugger: true,
@@ -39,120 +34,107 @@ const BASE_TERSER_OPTIONS = {
   format: {
     comments: false,
   },
-  // Source map settings will be injected per file
 };
 
 // ============================================ 
-// Helper Functions
+// Helpers
 // ============================================ 
 
-function ensureDirectoryExistence(filePath) {
-  const dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
+function getAllFiles(dirPath, arrayOfFiles) {
+  files = fs.readdirSync(dirPath);
+
+  arrayOfFiles = arrayOfFiles || [];
+
+  files.forEach(function(file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      // Filter: only .js, exclude .min.js and .map
+      if (file.endsWith('.js') && !file.endsWith('.min.js')) {
+        arrayOfFiles.push(path.join(dirPath, file));
+      }
+    }
+  });
+
+  return arrayOfFiles;
 }
 
 // ============================================ 
 // Process Single File
 // ============================================ 
 
-async function processFile(inputFile, outputFile, silent = false) {
-  const inputPath = path.join(ROOT_DIR, inputFile);
-  const outputPath = path.join(ROOT_DIR, outputFile);
-  const mapPath = outputPath + '.map';
+async function processFile(inputFile, silent = false) {
+  // Output is same path but .min.js
+  const outputFile = inputFile.replace(/\.js$/, '.min.js');
+  const mapFile = outputFile + '.map';
 
   try {
-    if (!fs.existsSync(inputPath)) {
-      if (!silent) console.log(`⚠️  Skipping ${inputFile} (not found)\n`);
-      return false;
-    }
+    if (!fs.existsSync(inputFile)) return false;
 
-    if (!silent) console.log(`📖 Reading: ${inputFile}`);
-    const code = fs.readFileSync(inputPath, 'utf8');
-    const originalSize = Buffer.byteLength(code, 'utf8');
-
-    if (!silent) console.log('⚙️  Minifying with Terser...');
-
-    // Configure options specifically for this file to generate correct Source Map
+    const code = fs.readFileSync(inputFile, 'utf8');
+    
+    // Config for Source Map
     const options = {
-      ...BASE_TERSER_OPTIONS,
+      ...TERSER_OPTIONS,
       sourceMap: {
         includeSources: true,
         filename: path.basename(outputFile),
-        url: path.basename(mapPath)
+        url: path.basename(mapFile)
       }
     };
 
     const result = await minify(code, options);
-
     if (result.error) throw result.error;
 
-    // Smart Save: Check if content changed (ignoring map file for comparison)
+    // Smart Save
     let fileChanged = true;
-    if (fs.existsSync(outputPath)) {
-      const existingContent = fs.readFileSync(outputPath, 'utf8');
+    if (fs.existsSync(outputFile)) {
+      const existingContent = fs.readFileSync(outputFile, 'utf8');
       fileChanged = existingContent !== result.code;
     }
 
     if (!fileChanged && !silent) {
-      console.log(`✓ No changes needed for ${outputFile}\n`);
+      console.log(`✓ Up to date: ${path.basename(outputFile)}`);
       return false;
     }
 
-    // Create directory if missing
-    ensureDirectoryExistence(outputPath);
+    if (!silent) console.log(`⚙️  Minifying: ${path.basename(inputFile)}`);
 
-    // Write Code
-    fs.writeFileSync(outputPath, result.code, 'utf8');
-    
-    // Write Source Map
-    if (result.map) {
-      fs.writeFileSync(mapPath, result.map, 'utf8');
-    }
-
-    const minifiedSize = Buffer.byteLength(result.code, 'utf8');
-    const saved = originalSize - minifiedSize;
-    const percentage = ((saved / originalSize) * 100).toFixed(2);
+    fs.writeFileSync(outputFile, result.code, 'utf8');
+    if (result.map) fs.writeFileSync(mapFile, result.map, 'utf8');
 
     if (!silent) {
-      console.log(`✅ Success!`);
-      console.log(`   Original:  ${(originalSize / 1024).toFixed(2)} KB`);
-      console.log(`   Minified:  ${(minifiedSize / 1024).toFixed(2)} KB`);
-      console.log(`   Saved:     ${(saved / 1024).toFixed(2)} KB (${percentage}%)`);
-      console.log(`   Map:       ${path.basename(mapPath)} generated`);
-      console.log(`   Output:    ${outputFile}\n`);
+      const originalSize = Buffer.byteLength(code, 'utf8');
+      const minifiedSize = Buffer.byteLength(result.code, 'utf8');
+      const saved = originalSize - minifiedSize;
+      const percentage = originalSize > 0 ? ((saved / originalSize) * 100).toFixed(1) : 0;
+      console.log(`✅ Saved ${percentage}% -> ${path.basename(outputFile)}\n`);
     }
 
     return true;
   } catch (error) {
-    console.error(`❌ Error processing ${inputFile}:`);
-    console.error(`   ${error.message}`);
-    if (error.line) console.error(`   Line: ${error.line}, Col: ${error.col}`);
-    console.log(''); // Empty line
+    console.error(`❌ Error in ${path.basename(inputFile)}: ${error.message}\n`);
     return false;
   }
 }
 
 // ============================================ 
-// Minify All Files
+// Main Logic
 // ============================================ 
 
 async function minifyAll(silent = false) {
-  if (!silent) console.log('🚀 JavaScript Minification Started\n');
-
-  let filesProcessed = 0;
-  for (const { input, output } of FILES_TO_MINIFY) {
-    if (await processFile(input, output, silent)) {
-      filesProcessed++;
-    }
+  if (!silent) console.log('🚀 JS Auto-Discovery Minification\n');
+  
+  if (!fs.existsSync(SRC_DIR)) {
+    console.log(`⚠️  Directory not found: ${SRC_DIR}`);
+    return;
   }
 
-  if (!silent) {
-    if (filesProcessed > 0) console.log(`🎉 Minified ${filesProcessed} file(s)!`);
-    else console.log('✓ All files up to date!');
+  const files = getAllFiles(SRC_DIR);
+  if (files.length === 0 && !silent) console.log('No .js files found to minify.');
+
+  for (const file of files) {
+    await processFile(file, silent);
   }
 }
 
@@ -161,38 +143,28 @@ async function minifyAll(silent = false) {
 // ============================================ 
 
 async function startWatchMode() {
-  console.log('👁️  Watch mode enabled - monitoring JS files...\n');
-  FILES_TO_MINIFY.forEach(({ input }) => console.log(`  - ${input}`));
-  console.log('\nPress Ctrl+C to stop.\n');
-
+  console.log(`👁️  Watch mode: Scanning ${path.relative(process.cwd(), SRC_DIR)}...`);
+  
   await minifyAll(true);
 
-  FILES_TO_MINIFY.forEach(({ input, output }) => {
-    const inputPath = path.join(ROOT_DIR, input);
-    if (!fs.existsSync(inputPath)) return;
-
+  // Watch entire directory recursively
+  if (fs.existsSync(SRC_DIR)) {
     let debounceTimer;
-    fs.watch(inputPath, (eventType, filename) => {
-      if (filename) {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(async () => {
-          console.log(`\n📝 ${input} changed - re-minifying...`);
-          await processFile(input, output, false);
-        }, 100);
-      }
-    });
-  });
-}
+    fs.watch(SRC_DIR, { recursive: true }, (eventType, filename) => {
+      if (!filename || !filename.endsWith('.js') || filename.endsWith('.min.js')) return;
 
-// ============================================ 
-// Main Execution
-// ============================================ 
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        console.log(`\n📝 Change: ${filename}`);
+        const fullPath = path.join(SRC_DIR, filename);
+        await processFile(fullPath, false);
+      }, 100);
+    });
+  }
+}
 
 if (WATCH_MODE) {
   startWatchMode();
 } else {
-  minifyAll().catch(error => {
-    console.error('❌ Fatal error:', error.message);
-    process.exit(1);
-  });
+  minifyAll();
 }

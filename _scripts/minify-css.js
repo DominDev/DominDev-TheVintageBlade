@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 /**
- * Auto CSS Minifier with Watch Mode
- * 
- * Usage:
- *   node _scripts/minify-css.js           - minify once
- *   node _scripts/minify-css.js --watch   - watch for changes
+ * CSS Auto-Minifier
+ * Automatically finds and minifies all .css files in src/css
  */
 
 const fs = require('fs');
@@ -14,110 +11,99 @@ const path = require('path');
 // Configuration
 // ============================================ 
 
-const FILES_TO_MINIFY = [
-  { input: 'src/css/style.css', output: 'src/css/style.min.css' }
-];
-
-const ROOT_DIR = path.join(__dirname, '..');
+const SRC_DIR = path.join(__dirname, '../src/css');
 const WATCH_MODE = process.argv.includes('--watch');
 
 // ============================================ 
-// Helper Functions
+// Helpers
 // ============================================ 
-
-function ensureDirectoryExistence(filePath) {
-  const dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
-}
 
 function minifyCSS(css) {
   return css
-    .replace(/\/\*[\s\S]*?\*\//g, '')       // Comments
-    .replace(/\s+/g, ' ')                   // Whitespace
-    .replace(/\s*([{}:;,>+~])\s*/g, '$1')   // Spaces around special chars
-    .replace(/;}/g, '}')                    // Trailing semicolons
-    .replace(/url\((['"]?)([^'"()]+)\1\)/g, 'url($2)') // Quotes in URLs
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([{}:;,>+~])\s*/g, '$1')
+    .replace(/;}/g, '}')
+    .replace(/url\((['"]?)([^'"()]+)\1\)/g, 'url($2)')
     .trim();
+}
+
+function getAllFiles(dirPath, arrayOfFiles) {
+  files = fs.readdirSync(dirPath);
+  arrayOfFiles = arrayOfFiles || [];
+
+  files.forEach(function(file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      if (file.endsWith('.css') && !file.endsWith('.min.css')) {
+        arrayOfFiles.push(path.join(dirPath, file));
+      }
+    }
+  });
+
+  return arrayOfFiles;
 }
 
 // ============================================ 
 // Process Single File
 // ============================================ 
 
-function processFile(inputFile, outputFile, silent = false) {
-  const inputPath = path.join(ROOT_DIR, inputFile);
-  const outputPath = path.join(ROOT_DIR, outputFile);
+function processFile(inputFile, silent = false) {
+  const outputFile = inputFile.replace(/\.css$/, '.min.css');
 
   try {
-    if (!fs.existsSync(inputPath)) {
-      if (!silent) console.log(`⚠️  Skipping ${inputFile} (not found)\n`);
-      return false;
-    }
+    if (!fs.existsSync(inputFile)) return false;
 
-    if (!silent) console.log(`📖 Reading: ${inputFile}`);
-    const css = fs.readFileSync(inputPath, 'utf8');
-    const originalSize = Buffer.byteLength(css, 'utf8');
-
-    if (!silent) console.log('⚙️  Minifying...');
+    const css = fs.readFileSync(inputFile, 'utf8');
     const minified = minifyCSS(css);
-    const minifiedSize = Buffer.byteLength(minified, 'utf8');
 
     // Smart Save
     let fileChanged = true;
-    if (fs.existsSync(outputPath)) {
-      const existingContent = fs.readFileSync(outputPath, 'utf8');
+    if (fs.existsSync(outputFile)) {
+      const existingContent = fs.readFileSync(outputFile, 'utf8');
       fileChanged = existingContent !== minified;
     }
 
     if (!fileChanged && !silent) {
-      console.log(`✓ No changes needed for ${outputFile}\n`);
+      console.log(`✓ Up to date: ${path.basename(outputFile)}`);
       return false;
     }
 
-    ensureDirectoryExistence(outputPath);
-    fs.writeFileSync(outputPath, minified, 'utf8');
-
-    const saved = originalSize - minifiedSize;
-    const percentage = ((saved / originalSize) * 100).toFixed(2);
+    if (!silent) console.log(`⚙️  Minifying: ${path.basename(inputFile)}`);
+    fs.writeFileSync(outputFile, minified, 'utf8');
 
     if (!silent) {
-      console.log(`✅ Success!`);
-      console.log(`   Original:  ${(originalSize / 1024).toFixed(2)} KB`);
-      console.log(`   Minified:  ${(minifiedSize / 1024).toFixed(2)} KB`);
-      console.log(`   Saved:     ${(saved / 1024).toFixed(2)} KB (${percentage}%)`);
-      console.log(`   Output:    ${outputFile}\n`);
+      const originalSize = Buffer.byteLength(css, 'utf8');
+      const minifiedSize = Buffer.byteLength(minified, 'utf8');
+      const saved = originalSize - minifiedSize;
+      const percentage = originalSize > 0 ? ((saved / originalSize) * 100).toFixed(1) : 0;
+      console.log(`✅ Saved ${percentage}% -> ${path.basename(outputFile)}\n`);
     }
 
     return true;
   } catch (error) {
-    console.error(`❌ Error processing ${inputFile}: ${error.message}\n`);
-    // Do NOT exit process here, so watch mode can continue
+    console.error(`❌ Error in ${path.basename(inputFile)}: ${error.message}\n`);
     return false;
   }
 }
 
 // ============================================ 
-// Minify All Files
+// Main Logic
 // ============================================ 
 
 function minifyAll(silent = false) {
-  if (!silent) console.log('🚀 CSS Minification Started\n');
+  if (!silent) console.log('🚀 CSS Auto-Discovery Minification\n');
 
-  let filesProcessed = 0;
-  FILES_TO_MINIFY.forEach(({ input, output }) => {
-    if (processFile(input, output, silent)) {
-      filesProcessed++;
-    }
-  });
-
-  if (!silent) {
-    if (filesProcessed > 0) console.log(`🎉 Minified ${filesProcessed} file(s)!`);
-    else console.log('✓ All files up to date!');
+  if (!fs.existsSync(SRC_DIR)) {
+    console.log(`⚠️  Directory not found: ${SRC_DIR}`);
+    return;
   }
+
+  const files = getAllFiles(SRC_DIR);
+  if (files.length === 0 && !silent) console.log('No .css files found.');
+
+  files.forEach(file => processFile(file, silent));
 }
 
 // ============================================ 
@@ -125,28 +111,24 @@ function minifyAll(silent = false) {
 // ============================================ 
 
 function startWatchMode() {
-  console.log('👁️  Watch mode enabled - monitoring CSS files...\n');
-  FILES_TO_MINIFY.forEach(({ input }) => console.log(`  - ${input}`));
-  console.log('\nPress Ctrl+C to stop.\n');
-
+  console.log(`👁️  Watch mode: Scanning ${path.relative(process.cwd(), SRC_DIR)}...`);
+  
   minifyAll(true);
 
-  FILES_TO_MINIFY.forEach(({ input, output }) => {
-    const inputPath = path.join(ROOT_DIR, input);
-    if (!fs.existsSync(inputPath)) return;
+  if (fs.existsSync(SRC_DIR)) {
+    let debounceTimer;
+    fs.watch(SRC_DIR, { recursive: true }, (eventType, filename) => {
+      if (!filename || !filename.endsWith('.css') || filename.endsWith('.min.css')) return;
 
-    fs.watch(inputPath, (eventType, filename) => {
-      if (eventType === 'change') {
-        console.log(`\n📝 ${input} changed - re-minifying...`);
-        processFile(input, output, false);
-      }
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        console.log(`\n📝 Change: ${filename}`);
+        const fullPath = path.join(SRC_DIR, filename);
+        processFile(fullPath, false);
+      }, 100);
     });
-  });
+  }
 }
-
-// ============================================ 
-// Main Execution
-// ============================================ 
 
 if (WATCH_MODE) {
   startWatchMode();
