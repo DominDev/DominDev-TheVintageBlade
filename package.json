@@ -7,12 +7,14 @@
     "watch": "node _scripts/watch.js",
     "minify:css": "node _scripts/minify-css.js",
     "minify:js": "node _scripts/minify-js.js",
-    "optimize:images": "node _scripts/optimize-images.js"
+    "optimize:images": "node _scripts/optimize-images.js",
+    "optimize:video": "node _scripts/optimize-video.js"
   },
   "keywords": [],
   "author": "DominDev",
   "license": "ISC",
   "devDependencies": {
+    "ffmpeg-static": "^5.3.0",
     "sharp": "^0.33.2",
     "terser": "^5.27.0"
   }

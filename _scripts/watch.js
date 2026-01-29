@@ -1,56 +1,90 @@
 /**
- * Watcher Script
- * Monitors CSS and JS changes and runs minification automatically.
+ * Central Watcher Script
+ * Monitors changes in src/ and assets/ and runs specific tasks.
  */
 
 const fs = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
 
-const WATCH_PATHS = [
-  { dir: 'src/css', ext: '.css', script: 'node _scripts/minify-css.js' },
-  { dir: 'src/js', ext: '.js', script: 'node _scripts/minify-js.js' },
-  { dir: 'assets/img/originals', ext: '', script: 'node _scripts/optimize-images.js', recursive: true },
-  { dir: 'assets/vid/originals', ext: '', script: 'node _scripts/optimize-video.js', recursive: true } // Monitoruj wideo
+// ============================================ 
+// Configuration
+// ============================================ 
+
+const TASKS = [
+  {
+    name: 'CSS',
+    path: 'src/css',
+    script: 'node _scripts/minify-css.js'
+  },
+  {
+    name: 'JS',
+    path: 'src/js',
+    script: 'node _scripts/minify-js.js'
+  },
+  {
+    name: 'Images',
+    path: 'assets/img/originals',
+    script: 'node _scripts/optimize-images.js'
+  },
+  {
+    name: 'Video',
+    path: 'assets/vid/originals',
+    script: 'node _scripts/optimize-video.js'
+  }
 ];
 
-console.log('👀 Watcher started... (Press Ctrl+C to stop)');
+// ============================================ 
+// Logic
+// ============================================ 
 
-WATCH_PATHS.forEach(({ dir, ext, script, recursive = false }) => {
-  const fullPath = path.join(__dirname, '..', dir);
+console.log('👀 Central Watcher started... (Press Ctrl+C to stop)\n');
+
+// Run all tasks on startup to ensure fresh state
+TASKS.forEach(task => runTask(task, true));
+
+TASKS.forEach(task => {
+  const fullPath = path.join(__dirname, '..', task.path);
   
   if (!fs.existsSync(fullPath)) {
-    console.log(`⚠️  Warning: Watch path not found: ${dir}`);
+    console.log(`⚠️  Path not found: ${task.path} (skipping watcher)`);
     return;
   }
 
-  console.log(`✓ Watching: ${dir}`);
+  console.log(`✓ Watching: ${task.path}`);
 
   let debounceTimer;
 
-  fs.watch(fullPath, { recursive }, (eventType, filename) => {
-    // Dla obrazów ignoruj zmiany w plikach tymczasowych/systemowych
-    if (filename && (filename.startsWith('.') || filename.endsWith('.tmp'))) return;
-
-    // Filter by extension if provided
-    if (ext && filename && !filename.endsWith(ext) && !filename.includes('.min.')) return;
-    
-    // Prosty debounce (aby nie odpalać skryptu 10 razy przy kopiowaniu folderu)
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      console.log(`\n⚡ Change detected in ${dir}/${filename || ''}. Running task...`);
+  try {
+    fs.watch(fullPath, { recursive: true }, (eventType, filename) => {
+      // Ignore system files / temporary files
+      if (!filename || filename.startsWith('.') || filename.endsWith('.tmp')) return;
       
-      exec(script, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`❌ Error: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          // Ignoruj ostrzeżenia, pokazuj tylko błędy
-          if (!stderr.includes('warn')) console.error(`⚠️  Stderr: ${stderr}`);
-        }
-        console.log(stdout.trim());
-      });
-    }, 500); // 500ms delay
-  });
+      // Ignore output files (to prevent loops)
+      if (filename.includes('.min.') || filename.includes('.map')) return;
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        console.log(`\n⚡ Change in ${task.name}: ${filename}`);
+        runTask(task);
+      }, 200); // 200ms debounce
+    });
+  } catch (err) {
+    console.error(`❌ Failed to watch ${task.path}: ${err.message}`);
+  }
 });
+
+function runTask(task, silent = false) {
+  exec(task.script, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`❌ Error in ${task.name}: ${error.message}`);
+      return;
+    }
+    if (stderr && !stderr.includes('warn')) {
+      console.error(`⚠️  Stderr (${task.name}): ${stderr}`);
+    }
+    if (stdout.trim() && !silent) {
+      console.log(stdout.trim());
+    }
+  });
+}

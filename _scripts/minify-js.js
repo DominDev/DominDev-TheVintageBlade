@@ -2,12 +2,6 @@
 /**
  * JavaScript Auto-Minifier
  * Automatically finds and minifies all .js files in src/js
- *
- * Features:
- * - Recursive auto-discovery
- * - Source Maps support
- * - Smart Save (only writes on change)
- * - Watch mode
  */
 
 const { minify } = require('terser');
@@ -19,7 +13,6 @@ const path = require('path');
 // ============================================ 
 
 const SRC_DIR = path.join(__dirname, '../src/js');
-const WATCH_MODE = process.argv.includes('--watch');
 
 const TERSER_OPTIONS = {
   compress: {
@@ -40,16 +33,25 @@ const TERSER_OPTIONS = {
 // Helpers
 // ============================================ 
 
-function getAllFiles(dirPath, arrayOfFiles) {
-  files = fs.readdirSync(dirPath);
+function ensureDirectoryExistence(filePath) {
+  const dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
 
+function getAllFiles(dirPath, arrayOfFiles) {
+  if (!fs.existsSync(dirPath)) return [];
+  
+  files = fs.readdirSync(dirPath);
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function(file) {
     if (fs.statSync(dirPath + "/" + file).isDirectory()) {
       arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
     } else {
-      // Filter: only .js, exclude .min.js and .map
       if (file.endsWith('.js') && !file.endsWith('.min.js')) {
         arrayOfFiles.push(path.join(dirPath, file));
       }
@@ -63,8 +65,7 @@ function getAllFiles(dirPath, arrayOfFiles) {
 // Process Single File
 // ============================================ 
 
-async function processFile(inputFile, silent = false) {
-  // Output is same path but .min.js
+async function processFile(inputFile) {
   const outputFile = inputFile.replace(/\.js$/, '.min.js');
   const mapFile = outputFile + '.map';
 
@@ -73,7 +74,6 @@ async function processFile(inputFile, silent = false) {
 
     const code = fs.readFileSync(inputFile, 'utf8');
     
-    // Config for Source Map
     const options = {
       ...TERSER_OPTIONS,
       sourceMap: {
@@ -93,24 +93,15 @@ async function processFile(inputFile, silent = false) {
       fileChanged = existingContent !== result.code;
     }
 
-    if (!fileChanged && !silent) {
-      console.log(`✓ Up to date: ${path.basename(outputFile)}`);
-      return false;
-    }
+    if (!fileChanged) return false;
 
-    if (!silent) console.log(`⚙️  Minifying: ${path.basename(inputFile)}`);
+    console.log(`⚙️  Minifying: ${path.relative(process.cwd(), inputFile)}`);
 
+    ensureDirectoryExistence(outputFile);
     fs.writeFileSync(outputFile, result.code, 'utf8');
     if (result.map) fs.writeFileSync(mapFile, result.map, 'utf8');
 
-    if (!silent) {
-      const originalSize = Buffer.byteLength(code, 'utf8');
-      const minifiedSize = Buffer.byteLength(result.code, 'utf8');
-      const saved = originalSize - minifiedSize;
-      const percentage = originalSize > 0 ? ((saved / originalSize) * 100).toFixed(1) : 0;
-      console.log(`✅ Saved ${percentage}% -> ${path.basename(outputFile)}\n`);
-    }
-
+    console.log(`   ✅ Created: ${path.relative(process.cwd(), outputFile)}`);
     return true;
   } catch (error) {
     console.error(`❌ Error in ${path.basename(inputFile)}: ${error.message}\n`);
@@ -122,49 +113,21 @@ async function processFile(inputFile, silent = false) {
 // Main Logic
 // ============================================ 
 
-async function minifyAll(silent = false) {
-  if (!silent) console.log('🚀 JS Auto-Discovery Minification\n');
-  
+async function minifyAll() {
   if (!fs.existsSync(SRC_DIR)) {
     console.log(`⚠️  Directory not found: ${SRC_DIR}`);
     return;
   }
 
   const files = getAllFiles(SRC_DIR);
-  if (files.length === 0 && !silent) console.log('No .js files found to minify.');
+  if (files.length === 0) return;
 
+  let count = 0;
   for (const file of files) {
-    await processFile(file, silent);
+    if (await processFile(file)) count++;
   }
-}
-
-// ============================================ 
-// Watch Mode
-// ============================================ 
-
-async function startWatchMode() {
-  console.log(`👁️  Watch mode: Scanning ${path.relative(process.cwd(), SRC_DIR)}...`);
   
-  await minifyAll(true);
-
-  // Watch entire directory recursively
-  if (fs.existsSync(SRC_DIR)) {
-    let debounceTimer;
-    fs.watch(SRC_DIR, { recursive: true }, (eventType, filename) => {
-      if (!filename || !filename.endsWith('.js') || filename.endsWith('.min.js')) return;
-
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(async () => {
-        console.log(`\n📝 Change: ${filename}`);
-        const fullPath = path.join(SRC_DIR, filename);
-        await processFile(fullPath, false);
-      }, 100);
-    });
-  }
+  if (count > 0) console.log(`✨ JS Updated (${count} files)`);
 }
 
-if (WATCH_MODE) {
-  startWatchMode();
-} else {
-  minifyAll();
-}
+minifyAll();
