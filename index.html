@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Vintage Blade | Premium Barbershop</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/css/style.min.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  </head>
+  <body>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="vignette"></div>
+
+      <!-- Left Typographic Block -->
+      <div class="hero__left">
+        <div class="crest reveal active">
+          <div class="crest__emblem">
+            <i class="ph ph-shield-check"></i>
+          </div>
+        </div>
+
+        <h1 class="hero__title caps">Vintage<br />Blade</h1>
+        <p class="hero__subtitle caps">Premium Men's Grooming Excellence</p>
+
+        <div class="hero__badge caps">Traditional Crafts</div>
+
+        <div class="hero__services-title caps">
+          <i class="ph ph-scissors"></i>
+          Master Services
+        </div>
+
+        <div class="hero__services-grid">
+          <div class="service-icon-box">
+            <div class="service-icon-box__circle">
+              <i class="ph ph-knife"></i>
+            </div>
+            <span class="service-icon-box__name caps">Shave</span>
+            <span class="service-icon-box__label caps">Royal</span>
+          </div>
+          <div class="service-icon-box">
+            <div class="service-icon-box__circle">
+              <i class="ph ph-armchair"></i>
+            </div>
+            <span class="service-icon-box__name caps">Trim</span>
+            <span class="service-icon-box__label caps">Legacy</span>
+          </div>
+        </div>
+
+        <a href="#booking" class="hero__cta caps">Explore Legacy</a>
+      </div>
+
+      <!-- Right Portrait Block -->
+      <div class="hero__right"></div>
+    </section>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-bar__container">
+        <!-- Mobile Toggle -->
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <i class="ph ph-list"></i>
+        </button>
+
+        <div class="nav-bar__menu">
+          <ul class="nav-bar__list">
+            <li><a href="#history" class="nav-bar__link caps">History</a></li>
+            <li><a href="#artisans" class="nav-bar__link caps">Artisans</a></li>
+            <li><a href="#services" class="nav-bar__link caps">Services</a></li>
+            <li><a href="#booking" class="nav-bar__link caps">Booking</a></li>
+          </ul>
+        </div>
+        
+        <div class="nav-bar__socials">
+          <i class="ph ph-instagram-logo"></i>
+          <i class="ph ph-facebook-logo"></i>
+          <i class="ph ph-twitter-logo"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- History Section (Previously Bottom Section) -->
+    <main id="history" class="content-section">
+      <!-- Left: Two Columns of Text -->
+      <div class="editorial reveal">
+        <div class="editorial__col">
+          <h3 class="caps">Our Craft</h3>
+          <span class="editorial__highlight caps">Est. 1924</span>
+          <p class="editorial__text">
+            Tradition is the foundation on which we build every cut. In a world
+            full of haste, we choose precision. Every razor in our shop has its
+            own story, and every movement of the master represents years of
+            practice.
+          </p>
+          <p class="editorial__text">
+            We are not just barbers. We are guardians of male aesthetics,
+            offering an experience that goes beyond a standard haircut. It is a
+            rite of passage.
+          </p>
+        </div>
+        <div class="editorial__col">
+          <h3 class="caps">Expert Knowledge</h3>
+          <span class="editorial__highlight caps">Quality First</span>
+          <p class="editorial__text">
+            Our barbers are artisans trained in the best European schools. We
+            combine classic shaving techniques with modern trends in men's
+            styling.
+          </p>
+          <p class="editorial__text">
+            We choose only natural cosmetics based on traditional recipes:
+            sandalwood oils, beeswax, and cedar extracts. For us, scent and
+            durability matter.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Mosaic Gallery Grid -->
+      <div class="mosaic reveal">
+        <div class="mosaic__card mosaic__card--tall">
+          <picture>
+            <source srcset="assets/img/optimized/gallery/master-barber-400.avif 400w, assets/img/optimized/gallery/master-barber-800.avif 800w, assets/img/optimized/gallery/master-barber-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/avif">
+            <source srcset="assets/img/optimized/gallery/master-barber-400.webp 400w, assets/img/optimized/gallery/master-barber-800.webp 800w, assets/img/optimized/gallery/master-barber-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/webp">
+            <img
+              src="assets/img/optimized/gallery/master-barber-800.jpg"
+              alt="Master Barber"
+              class="mosaic__img"
+              loading="lazy"
+            />
+          </picture>
+          <div class="mosaic__info caps">Lead Artisan / Master</div>
+        </div>
+        <div class="mosaic__card">
+          <picture>
+            <source srcset="assets/img/optimized/gallery/interior-400.avif 400w, assets/img/optimized/gallery/interior-800.avif 800w, assets/img/optimized/gallery/interior-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/avif">
+            <source srcset="assets/img/optimized/gallery/interior-400.webp 400w, assets/img/optimized/gallery/interior-800.webp 800w, assets/img/optimized/gallery/interior-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/webp">
+            <img
+              src="assets/img/optimized/gallery/interior-800.jpg"
+              alt="Barbershop Interior"
+              class="mosaic__img"
+              loading="lazy"
+            />
+          </picture>
+          <div class="mosaic__info caps">The Lounge</div>
+        </div>
+        <div class="mosaic__card">
+          <picture>
+            <source srcset="assets/img/optimized/gallery/royal-shave-400.avif 400w, assets/img/optimized/gallery/royal-shave-800.avif 800w, assets/img/optimized/gallery/royal-shave-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/avif">
+            <source srcset="assets/img/optimized/gallery/royal-shave-400.webp 400w, assets/img/optimized/gallery/royal-shave-800.webp 800w, assets/img/optimized/gallery/royal-shave-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 50vw" type="image/webp">
+            <img
+              src="assets/img/optimized/gallery/royal-shave-800.jpg"
+              alt="Shaving Detail"
+              class="mosaic__img"
+              loading="lazy"
+            />
+          </picture>
+          <div class="mosaic__info caps">Royal Shave</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- NEW: Artisans Section -->
+    <section id="artisans" class="artisans-section reveal">
+      <div class="section-header">
+        <h2 class="caps">The Artisans</h2>
+        <p class="caps">Masters of the Blade</p>
+      </div>
+      <div class="artisans-grid">
+        <div class="artisan-card">
+          <div class="artisan-img-wrapper">
+            <!-- Zmienione: Barber przycinający włosy, widoczne dłonie i narzędzia -->
+            <picture>
+              <source srcset="assets/img/optimized/artisans/marcus-400.avif 400w, assets/img/optimized/artisans/marcus-800.avif 800w, assets/img/optimized/artisans/marcus-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/avif">
+              <source srcset="assets/img/optimized/artisans/marcus-400.webp 400w, assets/img/optimized/artisans/marcus-800.webp 800w, assets/img/optimized/artisans/marcus-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/webp">
+              <img
+                src="assets/img/optimized/artisans/marcus-400.jpg"
+                alt="Marcus Thorn"
+                class="artisan-img"
+                loading="lazy"
+              />
+            </picture>
+          </div>
+          <div class="artisan-info">
+            <h3 class="artisan-name caps">Marcus Thorn</h3>
+            <span class="artisan-role">Head Barber</span>
+            <p class="artisan-bio">
+              With over 15 years of experience in London and New York, Marcus
+              specializes in classic cuts and hot towel shaves.
+            </p>
+          </div>
+        </div>
+        <div class="artisan-card">
+          <div class="artisan-img-wrapper">
+            <!-- Zmienione: Precyzyjne strzyżenie, skupienie na detalu -->
+            <picture>
+              <source srcset="assets/img/optimized/artisans/elias-400.avif 400w, assets/img/optimized/artisans/elias-800.avif 800w, assets/img/optimized/artisans/elias-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/avif">
+              <source srcset="assets/img/optimized/artisans/elias-400.webp 400w, assets/img/optimized/artisans/elias-800.webp 800w, assets/img/optimized/artisans/elias-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/webp">
+              <img
+                src="assets/img/optimized/artisans/elias-400.jpg"
+                alt="Elias Vane"
+                class="artisan-img"
+                loading="lazy"
+              />
+            </picture>
+          </div>
+          <div class="artisan-info">
+            <h3 class="artisan-name caps">Elias Vane</h3>
+            <span class="artisan-role">Beard Specialist</span>
+            <p class="artisan-bio">
+              Elias views beard sculpting as architecture. His precision with a
+              straight razor is unmatched in the city.
+            </p>
+          </div>
+        </div>
+        <div class="artisan-card">
+          <div class="artisan-img-wrapper">
+            <!-- Zmienione: Praca brzytwą/trymowanie brody w zbliżeniu -->
+            <picture>
+              <source srcset="assets/img/optimized/artisans/julian-400.avif 400w, assets/img/optimized/artisans/julian-800.avif 800w, assets/img/optimized/artisans/julian-1200.avif 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/avif">
+              <source srcset="assets/img/optimized/artisans/julian-400.webp 400w, assets/img/optimized/artisans/julian-800.webp 800w, assets/img/optimized/artisans/julian-1200.webp 1200w" sizes="(max-width: 768px) 100vw, 33vw" type="image/webp">
+              <img
+                src="assets/img/optimized/artisans/julian-400.jpg"
+                alt="Julian Black"
+                class="artisan-img"
+                loading="lazy"
+              />
+            </picture>
+          </div>
+          <div class="artisan-info">
+            <h3 class="artisan-name caps">Julian Black</h3>
+            <span class="artisan-role">Stylist</span>
+            <p class="artisan-bio">
+              Merging vintage aesthetics with modern texture. Julian is the
+              go-to expert for longer, styled cuts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Services Section -->
+    <section id="services" class="services-section reveal">
+      <div class="services-container">
+        <div class="section-header">
+          <h2 class="caps">Service Menu</h2>
+          <p class="caps">Curated Treatments</p>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-category">
+            <h3>Hair</h3>
+            <div class="menu-item">
+              <span class="menu-item-name">The Signature Cut</span>
+              <span class="menu-item-price">$60</span>
+            </div>
+            <span class="menu-item-desc"
+              >Consultation, wash, cut, and finish with premium products.</span
+            >
+
+            <div class="menu-item" style="margin-top: 2rem">
+              <span class="menu-item-name">The Buzz</span>
+              <span class="menu-item-price">$35</span>
+            </div>
+            <span class="menu-item-desc"
+              >Single grade clipper cut with tapered edges and neck shave.</span
+            >
+
+            <div class="menu-item" style="margin-top: 2rem">
+              <span class="menu-item-name">Junior Cut</span>
+              <span class="menu-item-price">$45</span>
+            </div>
+            <span class="menu-item-desc"
+              >For young gentlemen under 12. Same premium standard.</span
+            >
+          </div>
+
+          <div class="menu-category">
+            <h3>Shave & Beard</h3>
+            <div class="menu-item">
+              <span class="menu-item-name">Royal Shave</span>
+              <span class="menu-item-price">$55</span>
+            </div>
+            <span class="menu-item-desc"
+              >Hot towel, pre-shave oil, straight razor shave, and cold towel
+              finish.</span
+            >
+
+            <div class="menu-item" style="margin-top: 2rem">
+              <span class="menu-item-name">Beard Sculpt</span>
+              <span class="menu-item-price">$40</span>
+            </div>
+            <span class="menu-item-desc"
+              >Reshaping, line-up with razor, and conditioning treatment.</span
+            >
+
+            <div class="menu-item" style="margin-top: 2rem">
+              <span class="menu-item-name">The Full Service</span>
+              <span class="menu-item-price">$100</span>
+            </div>
+            <span class="menu-item-desc"
+              >Signature Cut combined with Royal Shave or Beard Sculpt.</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section reveal">
+      <div class="reviews-container">
+        <div class="section-header">
+          <h2 class="caps">The Verdict</h2>
+          <p class="caps">What the gentlemen say</p>
+        </div>
+        <div class="reviews-grid">
+          <div class="review-card">
+            <div class="stars">
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+            </div>
+            <p class="review-quote">
+              "The only place in the city where time slows down. The hot towel
+              shave is an absolute masterpiece."
+            </p>
+            <div class="review-author">
+              <div class="author-info">
+                <h4 class="caps">James Sterling</h4>
+                <span>Regular Member</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="stars">
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+            </div>
+            <p class="review-quote">
+              "Impeccable style and unmatched skill. They don't just cut hair;
+              they craft your image."
+            </p>
+            <div class="review-author">
+              <div class="author-info">
+                <h4 class="caps">Arthur Doyle</h4>
+                <span>Business Owner</span>
+              </div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="stars">
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+            </div>
+            <p class="review-quote">
+              "A true sanctuary for the modern man. The atmosphere is as sharp
+              as their blades."
+            </p>
+            <div class="review-author">
+              <div class="author-info">
+                <h4 class="caps">Thomas Reid</h4>
+                <span>Architect</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Booking Section -->
+    <section id="booking" class="booking-section reveal">
+      <div class="booking-content">
+        <h2 class="booking-title caps">Secure Your Seat</h2>
+        <p class="booking-subtitle caps">
+          We operate by appointment only to ensure undivided attention.
+        </p>
+        <a href="#" class="booking-btn caps">Book via Booksy</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4 class="caps">Vintage Blade</h4>
+          <p>
+            Establishing the standard for men's grooming since 1924. Tradition,
+            precision, and excellence.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4 class="caps">Location</h4>
+          <p>1 Marszałkowska St.</p>
+          <p>00-001 Warsaw, PL</p>
+          <p class="accent-text" style="margin-top: 10px">+48 123 456 789</p>
+        </div>
+        <div class="footer-col">
+          <h4 class="caps">Hours</h4>
+          <p>Mon - Fri: 10:00 - 20:00</p>
+          <p>Saturday: 09:00 - 16:00</p>
+          <p>Sunday: Closed</p>
+        </div>
+      </div>
+      <div class="footer-bottom caps">
+        &copy; 2024 The Vintage Blade. All Rights Reserved.
+      </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top" class="scroll-top-btn" aria-label="Scroll to top">
+      <i class="ph ph-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="src/js/main.min.js"></script>
+  </body>
+</html>

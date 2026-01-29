@@ -1,0 +1,19 @@
+{
+  "name": "domindev-thevintageblade",
+  "version": "1.0.0",
+  "description": "The Vintage Blade project",
+  "main": "index.js",
+  "scripts": {
+    "watch": "node _scripts/watch.js",
+    "minify:css": "node _scripts/minify-css.js",
+    "minify:js": "node _scripts/minify-js.js",
+    "optimize:images": "node _scripts/optimize-images.js"
+  },
+  "keywords": [],
+  "author": "DominDev",
+  "license": "ISC",
+  "devDependencies": {
+    "sharp": "^0.33.2",
+    "terser": "^5.27.0"
+  }
+}
