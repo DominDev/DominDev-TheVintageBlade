@@ -623,13 +623,14 @@ body::after {
   margin: 0 1rem;
   position: relative;
   top: -5px;
+  order: 2; /* Move dots to middle */
 }
 
 .menu-item-name {
   font-family: var(--font-display);
   font-size: 1.2rem;
   letter-spacing: 1px;
-  order: 1;
+  order: 1; /* Name first */
 }
 
 .menu-item-price {
@@ -637,7 +638,7 @@ body::after {
   font-weight: 700;
   font-size: 1rem;
   color: var(--text-main);
-  order: 3;
+  order: 3; /* Price last */
 }
 
 .menu-item-desc {
@@ -1005,6 +1006,6 @@ body::after {
 }
 
 .footer-link:hover .dev-text {
-  color: #ff5e61; /* Rozjaœniony akcent na hover */
+  color: #ff5e61; /* Rozjaï¿½niony akcent na hover */
   text-shadow: 0 0 12px var(--accent-glow);
 }
