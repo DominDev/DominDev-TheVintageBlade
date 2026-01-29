@@ -1,0 +1,141 @@
+# ============================================
+# USER PROJECT .gitignore TEMPLATE
+# ============================================
+# After copying this starter pack to your project:
+# 1. Rename this file: mv .gitignore.template .gitignore
+#    (or on Windows: ren .gitignore.template .gitignore)
+# 2. The AI config files will then be ignored in YOUR repo
+# ============================================
+
+# ============================================
+# DominDev Project .gitignore
+# ============================================
+
+# === OS Generated Files ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# === IDE / Editors ===
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# === Build / Generated ===
+dist/
+build/
+*.min.css
+*.min.js
+!src/css/style.min.css
+!src/js/main.min.js
+!src/js/config.min.js
+!src/js/privacy-content.min.js
+
+# === Environment & Secrets ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === Logs ===
+logs/
+*.log
+
+# === Project Snapshots (auto-generated) ===
+_project_snapshots/
+
+# === Temporary Files ===
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# === Image Optimization Intermediates ===
+# Keep optimized folder but ignore processing temp files
+assets/img/optimized/*.tmp
+
+# === Media sources (keep out of git) ===
+assets/**/originals/
+assets/**/raw/
+assets/**/source/
+assets/**/sources/
+
+# === Cache ===
+.cache/
+*.cache
+
+# === Python (if using scripts) ===
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+
+# === Project Internal Docs (technical notes, not for production) ===
+_docs/
+
+# === AI Assistant Configuration ===
+.claude/
+.gemini/
+.codex/
+.claude*/
+.gemini*/
+.codex*/
+**/CLAUDE.md
+**/GEMINI.md
+**/CODEX.md
+
+# === Package locks (optional - uncomment if you want to track) ===
+# package-lock.json
+# yarn.lock
+
+# === Tool caches / build outputs (extra, safe defaults) ===
+.vite/
+coverage/
+.nyc_output/
+.parcel-cache/
+.cache/
+.eslintcache
+.stylelintcache
+*.swp
+*.swo
+*.tmp
+
+# === Hosting / local tool state (do not commit) ===
+.netlify/
+.vercel/
+.firebase/
+.dynamodb/
+
+# === Framework build outputs (future-proof) ===
+.next/
+out/
+.nuxt/
+.svelte-kit/
+.astro/
+.turbo/
+dist-ssr/
+
+# === Media tooling ===
+ffmpeg2pass-*.log
