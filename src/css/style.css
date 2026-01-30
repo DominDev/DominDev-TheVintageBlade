@@ -511,12 +511,39 @@ body.no-scroll .scroll-top-btn { opacity: 0 !important; pointer-events: none; }
   .nav-brand { display: block !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 1.8rem !important; color: #efe9ec !important; letter-spacing: 4px !important; text-shadow: 0 4px 10px rgba(0,0,0,0.8) !important; line-height: 1 !important; }
   .nav-brand .accent-text { color: var(--accent) !important; text-shadow: 0 0 15px rgba(174, 73, 75, 0.4) !important; }
 
-  .nav-toggle {
-    display: flex !important; position: fixed !important; top: 15px !important; right: 20px !important; left: auto !important;
-    width: 40px !important; height: 40px !important; background: rgba(22, 22, 24, 0.6) !important;
-    border: 1px solid rgba(174, 73, 75, 0.5) !important; transform: rotate(45deg) !important;
-    z-index: 2001 !important; padding: 0 !important; cursor: pointer !important; backdrop-filter: blur(4px);
-  }
+    .nav-toggle {
+
+      display: flex !important;
+
+      position: fixed !important;
+
+      top: 15px !important;
+
+      right: 20px !important;
+
+      left: auto !important;
+
+      width: 40px !important;
+
+      height: 40px !important;
+
+      background: rgba(22, 22, 24, 0.6) !important;
+
+      border: 1px solid rgba(174, 73, 75, 0.5) !important;
+
+      border-radius: 8px !important; /* Added for consistency */
+
+      transform: rotate(45deg) !important;
+
+      z-index: 2001 !important;
+
+      padding: 0 !important;
+
+      cursor: pointer !important;
+
+      backdrop-filter: blur(4px);
+
+    }
   .nav-toggle::before, .nav-toggle::after { content: ''; position: absolute; height: 2px; background-color: #fff; transition: 0.3s; transform: rotate(-45deg); }
   .nav-toggle::before { width: 20px; top: 14px; left: 8px; }
   .nav-toggle::after { width: 14px; top: 22px; left: 14px; background-color: var(--accent) !important; }
