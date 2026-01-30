@@ -14,7 +14,10 @@
     />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="src/css/style.min.css">
+    <!-- Uwaga: Używamy wersji .min.css generowanej przez npm run minify:css -->
+    <link rel="stylesheet" href="src/css/style.min.css?v=1.1">
+    
+    <!-- Preload fonts or critical assets here -->
 
     <!-- Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -77,12 +80,13 @@
     <!-- Navigation Bar -->
     <nav class="nav-bar">
       <div class="nav-bar__container">
-        <!-- Mobile Toggle -->
-        <button class="nav-toggle" aria-label="Toggle navigation">
-          <i class="ph ph-list"></i>
-        </button>
+        <!-- Mobile Brand (Visible only on mobile) -->
+        <div class="nav-brand mobile-only caps">
+          Vintage <span class="accent-text">Blade</span>
+        </div>
 
-        <div class="nav-bar__menu">
+        <!-- Desktop Menu -->
+        <div class="nav-bar__menu desktop-only">
           <ul class="nav-bar__list">
             <li><a href="#history" class="nav-bar__link caps">History</a></li>
             <li><a href="#artisans" class="nav-bar__link caps">Artisans</a></li>
@@ -91,13 +95,41 @@
           </ul>
         </div>
         
-        <div class="nav-bar__socials">
+        <!-- Mobile Toggle Trigger (Visible only on mobile) -->
+        <button class="nav-toggle mobile-only" aria-label="Toggle navigation">
+          <!-- CSS generated bars -->
+        </button>
+        
+        <!-- Desktop Socials -->
+        <div class="nav-bar__socials desktop-only">
           <i class="ph ph-instagram-logo"></i>
           <i class="ph ph-facebook-logo"></i>
           <i class="ph ph-twitter-logo"></i>
         </div>
       </div>
     </nav>
+
+    <!-- Mobile Menu Overlay (Outside nav flow) -->
+    <div id="mobile-menu-overlay">
+      <!-- Close Button inside overlay -->
+      <button class="nav-close" aria-label="Close navigation">
+        <!-- CSS generated icon -->
+      </button>
+      
+      <div class="mobile-menu-content">
+        <ul class="nav-bar__list">
+          <li><a href="#history" class="nav-bar__link caps">History</a></li>
+          <li><a href="#artisans" class="nav-bar__link caps">Artisans</a></li>
+          <li><a href="#services" class="nav-bar__link caps">Services</a></li>
+          <li><a href="#booking" class="nav-bar__link caps">Booking</a></li>
+        </ul>
+        <div class="nav-bar__socials">
+          <i class="ph ph-instagram-logo"></i>
+          <i class="ph ph-facebook-logo"></i>
+          <i class="ph ph-twitter-logo"></i>
+        </div>
+      </div>
+    </div>
 
     <!-- History Section (Previously Bottom Section) -->
     <main id="history" class="content-section">

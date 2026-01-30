@@ -1,29 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Mobile Navigation Logic
   const navToggle = document.querySelector(".nav-toggle");
-  const navMenu = document.querySelector(".nav-bar__menu");
+  const navClose = document.querySelector(".nav-close"); // New close button
+  const navOverlay = document.getElementById("mobile-menu-overlay");
   const navLinks = document.querySelectorAll(".nav-bar__link");
 
-  if (navToggle && navMenu) {
-    navToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("open");
-      const icon = navToggle.querySelector("i");
-      if (navMenu.classList.contains("open")) {
-        icon.classList.replace("ph-list", "ph-x");
-      } else {
-        icon.classList.replace("ph-x", "ph-list");
-      }
-    });
-
-    // Close menu when link is clicked
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        navMenu.classList.remove("open");
-        const icon = navToggle.querySelector("i");
-        icon.classList.replace("ph-x", "ph-list");
-      });
-    });
+  function closeMenu() {
+    if (navOverlay) {
+      navOverlay.classList.remove("open");
+      document.body.classList.remove("no-scroll");
+    }
   }
+
+  function openMenu() {
+    if (navOverlay) {
+      navOverlay.classList.add("open");
+      document.body.classList.add("no-scroll");
+    }
+  }
+
+  if (navToggle) {
+    navToggle.addEventListener("click", openMenu);
+  }
+
+  if (navClose) {
+    navClose.addEventListener("click", closeMenu);
+  }
+
+  // Close menu when link is clicked
+  navLinks.forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
 
   // Intersection Observer for scroll animations
   const observerOptions = {
