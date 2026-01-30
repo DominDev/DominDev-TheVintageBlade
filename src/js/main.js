@@ -7,8 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeMenu() {
     if (navOverlay) {
-      navOverlay.classList.remove("open");
-      document.body.classList.remove("no-scroll");
+      const closeBtn = document.querySelector(".nav-close");
+      if (closeBtn) closeBtn.classList.add("cutting"); // Start animation
+
+      setTimeout(() => {
+        navOverlay.classList.remove("open");
+        document.body.classList.remove("no-scroll");
+        if (closeBtn) closeBtn.classList.remove("cutting"); // Reset for next time
+      }, 300); // Wait for scissor cut
     }
   }
 
